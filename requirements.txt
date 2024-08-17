@@ -4,3 +4,4 @@ numpy
 pickleshare
 scikit-learn
 plotly
+matplotlib
