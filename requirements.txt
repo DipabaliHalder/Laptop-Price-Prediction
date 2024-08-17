@@ -5,3 +5,4 @@ pickleshare
 scikit-learn
 plotly
 matplotlib
+seaborn
