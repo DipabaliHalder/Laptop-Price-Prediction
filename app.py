@@ -51,7 +51,7 @@ def auto_eda(data):
         st.plotly_chart(fig4, use_container_width=True)
 
 def train(data):
-    model=st.selectbox("Choose the Algorithm:",["Linear Regression","Decision Tree","Random Forest"],index=None,placeholder="Select an option")
+    model=st.selectbox("Choose the Algorithm:",["Linear Regression","Decision Tree","Random Forest"])
     per=st.slider("Choose the percentage of data for Training:",min_value=10,max_value=100)
     y=data['Price']
     X=data.drop(['Price'], axis=1)
@@ -75,7 +75,6 @@ def train(data):
         mae=mean_absolute_error(y_test,y_pred)
         st.write(f"R2 score: {r2:.2f}")
         st.write(f"Mean Absolute Error: {mae:,.2f}")
-        st.write(mean_squared_error(y_test, y_pred))
         print(mean_absolute_error(y_test,y_pred))
         with open('model.pkl', 'wb') as file:
             pickle.dump(model, file)
