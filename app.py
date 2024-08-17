@@ -13,6 +13,8 @@ from sklearn.linear_model import LinearRegression
 import pickle
 
 def auto_eda(data):
+    st.subheader("Summary Statistics")
+    st.write(data.describe())
     col1, col2 = st.columns(2)
     
     with col1:
@@ -50,7 +52,7 @@ def auto_eda(data):
 
 def train(data):
     model=st.selectbox("Choose the Algorithm:",["Linear Regression","Decision Tree","Random Forest"],index=None,placeholder="Select an option")
-    per=st.slider("Choose the percentage of data for Testing:",min_value=10,max_value=100)
+    per=st.slider("Choose the percentage of data for Training:",min_value=10,max_value=100)
     y=data['Price']
     X=data.drop(['Price'], axis=1)
     label_encoders = {}
@@ -60,7 +62,7 @@ def train(data):
             X[column] = le.fit_transform(X[column])
             label_encoders[column] = le
     if st.button("Train"):   
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=per/100,random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=(100-per)/100,random_state=42)
         if model == "Linear Regression":
             model=LinearRegression()
         elif model == "Decision Tree":
@@ -114,9 +116,9 @@ with tab1:
     st.subheader("What is this?")
     st.markdown("This project aims to predict the price of laptops based on various features and specifications. Whether you're a tech enthusiast, a data scientist, or someone interested in machine learning, this project provides an opportunity to explore the world of predictive modelling.")
     st.subheader("How to use it?")
-    st.markdown("EDA - Explore the data in the 'Exploratory Data Analysis' tab.")
-    st.markdown("Taining & Evaluation - Train and evaluate the model in the 'Model Evaluation' tab.")
-    st.markdown("Predict - Make predictions in the 'Prediction' tab.")
+    st.markdown("**Exploratory Data Analysis** - Explore the dataset here")
+    st.markdown("**Taining & Evaluation** - Train and evaluate the model tab to create the model.pkl file")
+    st.markdown("**Predict** - Based on the model.pkl file created in 'Taining & Evaluation' tab make predictions")
     st.subheader("Dataset Overview:")
     st.write(data.sample(3))
 
