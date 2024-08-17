@@ -60,7 +60,7 @@ def train(data):
             X[column] = le.fit_transform(X[column])
             label_encoders[column] = le
     if st.button("Train"):   
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=per/100,random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=(100-per)/100,random_state=42)
         if model == "Linear Regression":
             model=LinearRegression()
         elif model == "Decision Tree":
