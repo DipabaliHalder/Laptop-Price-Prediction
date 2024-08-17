@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score,mean_absolute_error
+from sklearn.metrics import mean_squared_error, r2_score,mean_absolute_error
 from sklearn.calibration import LabelEncoder
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
@@ -71,8 +71,12 @@ def train(data):
             model=RandomForestRegressor()
         model.fit(X_train,y_train)
         y_pred= model.predict(X_test)
-        st.write('R2 score: ',r2_score(y_test,y_pred))
-        st.write('Mean Absolute Error: ',mean_absolute_error(y_test,y_pred))
+        r2=r2_score(y_test,y_pred)
+        mae=mean_absolute_error(y_test,y_pred)
+        st.write(f"R2 score: {r2:.2f}")
+        st.write(f"Mean Absolute Error: {mae:,.2f}")
+        st.write(mean_squared_error(y_test, y_pred))
+        print(mean_absolute_error(y_test,y_pred))
         with open('model.pkl', 'wb') as file:
             pickle.dump(model, file)
         st.success("Model trained successfully!")
@@ -87,21 +91,22 @@ def predict():
         for i in df.columns:
             a=st.selectbox(f"{i}",sorted(df[f"{i}"].unique()))
             input_data[i]=a
-        
-        label_encoders = {}
-        for column in df.columns:
-            if df[column].dtype == 'object':
-                le = LabelEncoder()
-                df[column] = le.fit_transform(df[column])
-                label_encoders[column] = le
-        
-        input_df = pd.DataFrame([input_data])
-        for column in label_encoders:
-            input_df[column] = label_encoders[column].transform(input_df[column])
-        
+
         if st.button('Predict Price'):
+            label_encoders = {}
+            for column in df.columns:
+                if df[column].dtype == 'object':
+                    le = LabelEncoder()
+                    df[column] = le.fit_transform(df[column])
+                    label_encoders[column] = le
+            
+            input_df = pd.DataFrame([input_data])
+            for column in label_encoders:
+                input_df[column] = label_encoders[column].transform(input_df[column])
+
             prediction = model.predict(input_df)[0]
             st.subheader(f"Laptop Price: ₹{prediction:,.2f}")
+        
     except FileNotFoundError:
         st.error("The model has not been trained yet. Please train the model in the 'Training & Evaluation' tab.")
 
