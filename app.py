@@ -1,3 +1,5 @@
+import os
+from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score,mean_absolute_error
@@ -11,6 +13,7 @@ import plotly.graph_objects as go
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import pickle
+import seaborn as sns
 
 def auto_eda(data):
     st.subheader("Summary Statistics")
@@ -79,6 +82,24 @@ def train(data):
         with open('model.pkl', 'wb') as file:
             pickle.dump(model, file)
         st.success("Model trained successfully!")
+        # Plot Actual vs. Predicted values with enhancements
+        st.subheader("Actual vs. Predicted Prices")
+
+        plt.figure(figsize=(12, 8))
+        sns.set(style="whitegrid")
+
+        # Scatter plot with error magnitude indicated by color
+        errors = abs(y_test - y_pred)
+        sns.scatterplot(x=y_test, y=y_pred, hue=errors, palette="coolwarm", size=errors, sizes=(20, 200), legend=False)
+
+        # Plot ideal line (where predictions match actuals)
+        sns.lineplot(x=y_test, y=y_test, color='red', label='Ideal')
+
+        # Titles, labels, and annotations
+        plt.title(f"Model: {model}", fontsize=16)
+        plt.xlabel("Actual Prices (₹)", fontsize=14)
+        plt.ylabel("Predicted Prices (₹)", fontsize=14)
+        st.pyplot(plt)
 
 def predict():
     try:
